@@ -474,10 +474,12 @@ impl Animation {
         }
     }
 
+	///
     pub fn get_tracks(&self) -> &[Track] {
         &self.tracks
     }
 
+	///
     pub fn set_time_position(&mut self, time: f32) -> &mut Self {
         if self.looped {
             self.time_position = wrapf(time, 0.0, self.length);
@@ -487,14 +489,29 @@ impl Animation {
         self
     }
 
+	/// Resets animation time position to 0. Restarts animation from beginning.
+	/// 
+	/// ```rust
+	/// 
+	/// ```
     pub fn rewind(&mut self) -> &mut Self {
         self.set_time_position(0.0)
     }
 
+	/// Sets the animation lenth to a integer value in seconds.
+	/// 
+	/// ```rust
+	/// 
+	/// ```
     pub fn length(&self) -> f32 {
         self.length
     }
 
+	/// Calls the update pose function which checks for the animation being played and updates the animation to a specific pose 
+	/// matching the current time position. Then it creates a variable called "current_time_position" which calls the 
+	/// get_time_position function which returns the current time position. This variable is then used to create a new variable 
+	/// called "new_time_position" with the value current_time_position * tick value * speed. Speed actually being the get_speed
+	/// function which returns the speed value. // signals now
     fn tick(&mut self, dt: f32) {
         self.update_pose();
 
