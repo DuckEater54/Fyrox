@@ -8,11 +8,18 @@ use std::{
     process::Command,
 };
 
+enum ProjectType {
+    EditorFocused,
+    CodeFocused
+}
+
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
     #[clap(short, long, default_value = "my_game")]
     name: String,
+    #[clap(short, long, default_value = ProjectType::EditorFocused)]
+    project_type: String,
 }
 
 fn write_file<P: AsRef<Path>, S: AsRef<str>>(path: P, content: S) {
@@ -242,19 +249,22 @@ fn main() {
     if args.name.contains('-') {
         panic!("The project name cannot contain `-`.")
     }
-
+    if args.project_type.contains("Editor" || "Code") {
+        if args.project_type.contains("Editor") {
+            init_workspace(base_path);
+            init_game(base_path, &args);
+            init_editor(base_path, &args);
+            init_executor(base_path, &args);
+            println!("\tRun the Editor: cargo run --package editor --release");
+            println!("\tRun the Executor: cargo run --package executor --release");
+        } else if args.project_type.contains("
+    } else {
+        panic!("Invalid option. Please use \"Editor\" or \"Code\"")
     let base_path = Path::new(&args.name);
-
-    init_workspace(base_path);
-    init_game(base_path, &args);
-    init_editor(base_path, &args);
-    init_executor(base_path, &args);
 
     println!("Project {} was generated successfully!", args.name);
     println!(
         "Navigate to {} directory and use one of the following commands:",
         args.name
     );
-    println!("\tRun the Editor: cargo run --package editor --release");
-    println!("\tRun the Executor: cargo run --package executor --release");
 }
